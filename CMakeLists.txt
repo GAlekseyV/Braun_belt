@@ -18,6 +18,7 @@ set(PARTS
 
 set(Part_1
         0_priority_container
+        1_hash_set
 )
 
 set(Part_2
