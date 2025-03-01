@@ -20,6 +20,7 @@ set(Part_1
         0_priority_container
         1_hash_set
         2_set_iterator++
+        3_hash_point
 )
 
 set(Part_2
