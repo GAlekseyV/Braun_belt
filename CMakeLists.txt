@@ -19,6 +19,7 @@ set(PARTS
 set(Part_1
         0_priority_container
         1_hash_set
+        2_set_iterator++
 )
 
 set(Part_2

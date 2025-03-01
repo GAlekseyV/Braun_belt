@@ -6,6 +6,7 @@
 
 1. [Контейнер с приоритетами](/Part_1/0_priority_container/task.md)
 2. [Хэш-таблица](/Part_1/1_hash_set/task.md)
+3. [set::iterator++](/Part_1/2_set_iterator++/task.md)
 
 ## 2. Пространства имён и указатель this
 
