@@ -21,6 +21,7 @@ set(Part_1
         1_hash_set
         2_set_iterator++
         3_hash_point
+        4_hash_person
 )
 
 set(Part_2

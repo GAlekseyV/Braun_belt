@@ -8,6 +8,7 @@
 2. [Хэш-таблица](/Part_1/1_hash_set/task.md)
 3. [set::iterator++](/Part_1/2_set_iterator++/task.md)
 4. [Интеграция структуры Point в unordered_set](/Part_1/3_hash_point/task.md)
+5. [Интеграция структуры Person в unordered_set](/Part_1/4_hash_person/task.md)
 
 ## 2. Пространства имён и указатель this
 
