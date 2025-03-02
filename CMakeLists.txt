@@ -27,6 +27,7 @@ set(Part_1
 
 set(Part_2
         0_spendings_xml
+        1_spendings_json
 )
 
 set(Part_3
