@@ -9,8 +9,11 @@
 3. [set::iterator++](/Part_1/2_set_iterator++/task.md)
 4. [Интеграция структуры Point в unordered_set](/Part_1/3_hash_point/task.md)
 5. [Интеграция структуры Person в unordered_set](/Part_1/4_hash_person/task.md)
+6. [Вторичный индекс в базе данных](/Part_1/5_secondary_index/task.md)
 
 ## 2. Пространства имён и указатель this
+
+1. [Загрузка расходов из формата XML](/Part_2/0_spendings_xml/task.md)
 
 ## 3. Константность и unique_ptr
 
