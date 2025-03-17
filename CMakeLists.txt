@@ -22,12 +22,13 @@ set(Part_1
         2_set_iterator++
         3_hash_point
         4_hash_person
-        #5_secondary_index
+        5_secondary_index
 )
 
 set(Part_2
         0_spendings_xml
         1_spendings_json
+        2_ini
 )
 
 set(Part_3
