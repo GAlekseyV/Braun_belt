@@ -4,7 +4,10 @@
 #include <algorithm>
 #include <iostream>
 #include <sstream>
+#include <string>
 #include <vector>
+#include <map>
+#include <utility>
 using namespace std;
 
 struct Spending
@@ -52,10 +55,12 @@ vector<Spending> LoadFromJson(istream &input)
     Spending spend;
     spend.category = node.AsMap().at("category").AsString();
     spend.amount = node.AsMap().at("amount").AsInt();
-    result.push_back(move(spend));
+    result.push_back(std::move(spend));
   }
   return result;
 }
+
+namespace {
 
 void TestLoadFromJson()
 {
@@ -93,7 +98,7 @@ void TestJsonLibrary()
 
   Document doc = Load(json_input);
   const vector<Node> &root = doc.GetRoot().AsArray();
-  ASSERT_EQUAL(root.size(), 3u);
+  ASSERT_EQUAL(root.size(), 3U);
 
   const map<string, Node> &food = root.front().AsMap();
   ASSERT_EQUAL(food.at("category").AsString(), "food");
@@ -105,7 +110,8 @@ void TestJsonLibrary()
 
   Node transport(map<string, Node>{ { "category", Node("transport") }, { "amount", Node(1150) } });
   Node array_node(vector<Node>{ transport });
-  ASSERT_EQUAL(array_node.AsArray().size(), 1u);
+  ASSERT_EQUAL(array_node.AsArray().size(), 1U);
+}
 }
 
 int main()

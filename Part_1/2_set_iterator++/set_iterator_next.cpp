@@ -71,48 +71,44 @@ Node* Next(Node* node)
   return next;
 }
 
+namespace {
 
 void Test1()
 {
-  NodeBuilder nb;
+  NodeBuilder nbuilder;
 
-  Node *root = nb.CreateRoot(50);
+  Node *root = nbuilder.CreateRoot(50);
   ASSERT_EQUAL(root->value, 50);
 
-  Node *l = nb.CreateLeftSon(root, 2);
-  Node *min = nb.CreateLeftSon(l, 1);
-  Node *r = nb.CreateRightSon(l, 4);
+  Node *left_node = nbuilder.CreateLeftSon(root, 2);
+  Node *min = nbuilder.CreateLeftSon(left_node, 1);
+  Node *right_node = nbuilder.CreateRightSon(left_node, 4);
   ASSERT_EQUAL(min->value, 1);
-  ASSERT_EQUAL(r->parent->value, 2);
+  ASSERT_EQUAL(right_node->parent->value, 2);
 
-  nb.CreateLeftSon(r, 3);
-  nb.CreateRightSon(r, 5);
+  nbuilder.CreateLeftSon(right_node, 3);
+  nbuilder.CreateRightSon(right_node, 5);
 
-  r = nb.CreateRightSon(root, 100);
-  l = nb.CreateLeftSon(r, 90);
-  nb.CreateRightSon(r, 101);
+  right_node = nbuilder.CreateRightSon(root, 100);
+  left_node = nbuilder.CreateLeftSon(right_node, 90);
+  nbuilder.CreateRightSon(right_node, 101);
 
-  nb.CreateLeftSon(l, 89);
-  r = nb.CreateRightSon(l, 91);
+  nbuilder.CreateLeftSon(left_node, 89);
+  right_node = nbuilder.CreateRightSon(left_node, 91);
 
-  ASSERT_EQUAL(Next(l)->value, 91);
+  ASSERT_EQUAL(Next(left_node)->value, 91);
   ASSERT_EQUAL(Next(root)->value, 89);
   ASSERT_EQUAL(Next(min)->value, 2);
-  ASSERT_EQUAL(Next(r)->value, 100);
-
-  while (min) {
-    cout << min->value << '\n';
-    min = Next(min);
-  }
+  ASSERT_EQUAL(Next(right_node)->value, 100);
 }
 
 void TestRootOnly()
 {
-  NodeBuilder nb;
-  Node *root = nb.CreateRoot(42);
+  NodeBuilder nbuilder;
+  Node *root = nbuilder.CreateRoot(42);
   ASSERT(Next(root) == nullptr);
 };
-
+} // namespace
 
 int main()
 {

@@ -1,15 +1,18 @@
 #include "json.h"
 
-Node::Node(vector<Node> array) : as_array(move(array)) {
+#include <utility>
+#include <string>
+
+Node::Node(vector<Node> array) : as_array(std::move(array)) {
 }
 
-Node::Node(map<string, Node> map) : as_map(move(map)){
+Node::Node(map<string, Node> map) : as_map(std::move(map)){
 }
 
 Node::Node(int value) : as_int(value) {
 }
 
-Node::Node(string value) : as_string(move(value)) {
+Node::Node(string value) : as_string(std::move(value)) {
 }
 
 const vector<Node>& Node::AsArray() const {
@@ -28,7 +31,7 @@ const string& Node::AsString() const {
   return as_string;
 }
 
-Document::Document(Node root) : root(move(root)) {
+Document::Document(Node root) : root(std::move(root)) {
 }
 
 const Node& Document::GetRoot() const {
@@ -47,7 +50,7 @@ Node LoadArray(istream& input) {
     result.push_back(LoadNode(input));
   }
 
-  return Node(move(result));
+  return Node(std::move(result));
 }
 
 Node LoadInt(istream& input) {
@@ -62,7 +65,7 @@ Node LoadInt(istream& input) {
 Node LoadString(istream& input) {
   string line;
   getline(input, line, '"');
-  return Node(move(line));
+  return Node(std::move(line));
 }
 
 Node LoadDict(istream& input) {
@@ -75,10 +78,10 @@ Node LoadDict(istream& input) {
 
     string key = LoadString(input).AsString();
     input >> c;
-    result.insert({move(key), LoadNode(input)});
+    result.insert({std::move(key), LoadNode(input)});
   }
 
-  return Node(move(result));
+  return Node(std::move(result));
 }
 
 Node LoadNode(istream& input) {

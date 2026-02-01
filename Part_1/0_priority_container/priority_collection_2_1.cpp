@@ -37,24 +37,24 @@ public:
 
   // Определить, принадлежит ли идентификатор какому-либо
   // хранящемуся в контейнере объекту
-  [[nodiscard]] bool IsValid(Id id) const
+  [[nodiscard]] bool IsValid(Id obj_id) const
   {
-    return objects[id].second >= 0;
+    return objects[obj_id].second >= 0;
   }
 
   // Получить объект по идентификатору
-  [[nodiscard]] const T &Get(Id id) const
+  [[nodiscard]] const T &Get(Id obj_id) const
   {
-    return objects[id].first;
+    return objects[obj_id].first;
   }
 
   // Увеличить приоритет объекта на 1
-  void Promote(Id id)
+  void Promote(Id obj_id)
   {
-    auto old_priority = objects[id].second++;
+    auto old_priority = objects[obj_id].second++;
     auto new_priority = old_priority + 1;
-    sorted_objects.erase({ old_priority, id });
-    sorted_objects.emplace(new_priority, id);
+    sorted_objects.erase({ old_priority, obj_id });
+    sorted_objects.emplace(new_priority, obj_id);
   }
 
   // Получить объект с максимальным приоритетом и его приоритет
@@ -66,10 +66,10 @@ public:
   // Аналогично GetMax, но удаляет элемент из контейнера
   pair<T, int> PopMax()
   {
-    auto id = prev(sorted_objects.end())->second;
-    auto result = std::move(objects[id]);
-    sorted_objects.erase({ result.second, id });
-    objects[id] = make_pair(T(), -1);
+    auto obj_id = prev(sorted_objects.end())->second;
+    auto result = std::move(objects[obj_id]);
+    sorted_objects.erase({ result.second, obj_id });
+    objects[obj_id] = make_pair(T(), -1);
     return result;
   }
 
@@ -89,12 +89,14 @@ public:
   StringNonCopyable(StringNonCopyable &&) = default;
   StringNonCopyable &operator=(const StringNonCopyable &) = delete;
   StringNonCopyable &operator=(StringNonCopyable &&) = default;
+  ~StringNonCopyable() = default; // Явный дефолтный деструктор, чтобы избежать предупреждений
 };
 
+namespace {
 void TestNoCopy()
 {
   PriorityCollection<StringNonCopyable> strings;
-  const auto white_id = strings.Add("white");
+  strings.Add("white");
   const auto yellow_id = strings.Add("yellow");
   const auto red_id = strings.Add("red");
 
@@ -119,6 +121,7 @@ void TestNoCopy()
     ASSERT_EQUAL(item.second, 0);
   }
 }
+}// namespace
 
 int main()
 {

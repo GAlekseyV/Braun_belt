@@ -1,4 +1,5 @@
-#pragma once
+#ifndef TEST_RUNNER_H
+#define TEST_RUNNER_H
 
 #include <iostream>
 #include <map>
@@ -92,6 +93,12 @@ inline void Assert(bool b, const string &hint)
 class TestRunner
 {
 public:
+  TestRunner() = default;
+  TestRunner(const TestRunner&) = delete;
+  TestRunner& operator=(const TestRunner&) = delete;
+  TestRunner(TestRunner&&) = delete;
+  TestRunner& operator=(TestRunner&&) = delete;
+
   template<class TestFunc>
   void RunTest(TestFunc func, const string &test_name)
   {
@@ -137,3 +144,5 @@ private:
 
 #define RUN_TEST(tr, func) \
   tr.RunTest(func, #func)
+
+#endif

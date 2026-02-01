@@ -4,7 +4,10 @@
 #include <algorithm>
 #include <iostream>
 #include <sstream>
+#include <string>
 #include <vector>
+#include <utility>
+
 using namespace std;
 
 struct Spending
@@ -53,10 +56,12 @@ vector<Spending> LoadFromXml(istream &input)
     Spending spend;
     spend.category = node.AttributeValue<string>("category");
     spend.amount = node.AttributeValue<int>("amount");
-    result.push_back(move(spend));
+    result.push_back(std::move(spend));
   }
   return result;
 }
+
+namespace {
 
 void TestLoadFromXml()
 {
@@ -95,7 +100,7 @@ void TestXmlLibrary()
   Document doc = Load(xml_input);
   const Node &root = doc.GetRoot();
   ASSERT_EQUAL(root.Name(), "july");
-  ASSERT_EQUAL(root.Children().size(), 3u);
+  ASSERT_EQUAL(root.Children().size(), 3U);
 
   const Node &food = root.Children().front();
   ASSERT_EQUAL(food.AttributeValue<string>("category"), "food");
@@ -108,8 +113,9 @@ void TestXmlLibrary()
   Node july("july", {});
   Node transport("spend", { { "category", "transport" }, { "amount", "1150" } });
   july.AddChild(transport);
-  ASSERT_EQUAL(july.Children().size(), 1u);
+  ASSERT_EQUAL(july.Children().size(), 1U);
 }
+} // namespace
 
 int main()
 {

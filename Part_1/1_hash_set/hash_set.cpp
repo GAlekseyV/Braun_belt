@@ -40,16 +40,14 @@ public:
     }
   }
 
-  const BucketList &GetBucket(const Type &value) const
+  [[nodiscard]] const BucketList &GetBucket(const Type &value) const
   {
     return _buckets[_hash(value)];
   }
 
 private:
-  size_t _hash(const Type &value) const
+  [[nodiscard]] size_t _hash(const Type &value) const
   {
-    auto h = _hasher(value);
-    auto bsz = _buckets.size();
     return _hasher(value) % _buckets.size();
   }
   vector<BucketList> _buckets;
@@ -85,6 +83,8 @@ struct TestValueHasher
   }
 };
 
+namespace {
+
 void TestSmoke()
 {
   HashSet<int, IntHasher> hash_set(2);
@@ -111,7 +111,7 @@ void TestSmoke()
 
 void TestEmpty()
 {
-  HashSet<int, IntHasher> hash_set(10);
+  const HashSet<int, IntHasher> hash_set(10);
   for (int value = 0; value < 10000; ++value) {
     ASSERT(!hash_set.Has(value));
   }
@@ -146,6 +146,7 @@ void TestEquivalence()
   ASSERT_EQUAL(1, distance(begin(bucket), end(bucket)));
   ASSERT_EQUAL(2, bucket.front().value);
 }
+}  // namespace
 
 int main()
 {

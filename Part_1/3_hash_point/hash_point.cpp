@@ -38,9 +38,11 @@ struct Hasher
   }
 };
 
+namespace {
+
 void TestSmoke()
 {
-  vector<Point3D> points = {
+  const vector<Point3D> points = {
     { 1, 2, 3 },
     { 0, 2, 3 },
     { 1, 0, 3 },
@@ -60,7 +62,7 @@ void TestSmoke()
 
 void TestPurity()
 {
-  Point3D point = { 1, 2, 3 };
+  const Point3D point = { 1, 2, 3 };
   Hasher hasher;
 
   auto hash = hasher(point);
@@ -186,6 +188,7 @@ void TestDistribution()
   const double critical_value = 2158.4981036918693;
   ASSERT(pearson_stat < critical_value);
 }
+} //namespace
 
 int main()
 {

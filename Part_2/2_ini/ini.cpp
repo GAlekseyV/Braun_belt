@@ -4,7 +4,6 @@
 #include <cstdio>
 #include <istream>
 #include <string>
-#include <string_view>
 #include <utility>
 
 using namespace std;
@@ -13,7 +12,7 @@ string LoadString(istream &input, char c = '\n')
 {
   string line;
   getline(input, line, c);
-  return move(line);
+  return line;
 }
 
 pair<string, string> Split(string line, char by)
