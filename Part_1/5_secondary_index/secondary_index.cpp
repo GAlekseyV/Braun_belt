@@ -1,12 +1,10 @@
 #include "test_runner.h"
 
-#include <functional>
-#include <iostream>
 #include <list>
 #include <map>
 #include <string>
 #include <tuple>
-#include <unordered_set>
+#include <unordered_map>
 
 using namespace std;
 
@@ -57,8 +55,8 @@ public:
   template<typename Callback>
   void RangeByKarma(int low, int high, Callback callback) const
   {
-    auto low_it = by_karma_idx.lower_bound(high);
-    auto high_it = by_karma_idx.upper_bound(low);
+    auto low_it = by_karma_idx.lower_bound(low);
+    auto high_it = by_karma_idx.upper_bound(high);
     for (auto it = low_it; it != high_it; ++it) {
       if (!callback(*(it->second))) {
         break;
@@ -79,20 +77,33 @@ public:
 
 private:
   list<Record> database;
-  map<string, list<Record>::iterator> by_id_idx;
-  map<int, list<Record>::iterator> by_timestamp_idx;
-  multimap<string, list<Record>::iterator, greater<>> by_user_idx;
-  multimap<int, list<Record>::iterator, greater<>> by_karma_idx;
+  using ListIt = list<Record>::iterator;
+  using TsIt = multimap<int, ListIt>::iterator;
+  using KrIt = multimap<int, ListIt>::iterator;
+  using UserIt = unordered_multimap<string, ListIt>::iterator;
+
+  struct Idx
+  {
+    ListIt record;
+    TsIt ts;
+    KrIt kr;
+    UserIt user;
+  };
+
+  unordered_map<string, Idx> by_id_idx;
+  multimap<int, ListIt> by_timestamp_idx;
+  unordered_multimap<string, ListIt> by_user_idx;
+  multimap<int, ListIt> by_karma_idx;
 };
 
 bool Database::Put(const Record &record)
 {
   if (by_id_idx.count(record.id) == 0) {
     auto it = database.insert(database.begin(), record);
-    by_id_idx[record.id] = it;
-    by_timestamp_idx[record.timestamp] = it;
-    by_user_idx.insert({ record.user, it });
-    by_karma_idx.insert({ record.karma, it });
+    auto ts_it = by_timestamp_idx.insert({ record.timestamp, it });
+    auto user_it = by_user_idx.insert({ record.user, it });
+    auto kr_it = by_karma_idx.insert({ record.karma, it });
+    by_id_idx[record.id] = Idx{ it, ts_it, kr_it, user_it };
     return true;
   }
   return false;
@@ -100,8 +111,9 @@ bool Database::Put(const Record &record)
 
 const Record *Database::GetById(const string &id) const
 {
-  if (by_id_idx.count(id) > 0) {
-    return &(*by_id_idx.at(id));
+  auto it = by_id_idx.find(id);
+  if (it != by_id_idx.end()) {
+    return &(*(it->second.record));
   }
   return nullptr;
 }
@@ -113,41 +125,17 @@ bool Database::Erase(const string &id)
     return false;
   }
 
-  auto record_it = it->second;
-  const Record &record = *record_it;
+  Idx idx = it->second;
+  // Erase index entries using stored iterators (O(1))
+  by_timestamp_idx.erase(idx.ts);
+  by_user_idx.erase(idx.user);
+  by_karma_idx.erase(idx.kr);
 
-  // Remove from by_id_idx
+  // Erase record from main storage
+  database.erase(idx.record);
+
+  // Erase id index
   by_id_idx.erase(it);
-
-  // Remove from by_timestamp_idx
-  auto ts_range = by_timestamp_idx.equal_range(record.timestamp);
-  for (auto ts_it = ts_range.first; ts_it != ts_range.second; ++ts_it) {
-    if (ts_it->second == record_it) {
-      by_timestamp_idx.erase(ts_it);
-      break;
-    }
-  }
-
-  // Remove from by_user_idx
-  auto user_range = by_user_idx.equal_range(record.user);
-  for (auto user_it = user_range.first; user_it != user_range.second; ++user_it) {
-    if (user_it->second == record_it) {
-      by_user_idx.erase(user_it);
-      break;
-    }
-  }
-
-  // Remove from by_karma_idx
-  auto karma_range = by_karma_idx.equal_range(record.karma);
-  for (auto karma_it = karma_range.first; karma_it != karma_range.second; ++karma_it) {
-    if (karma_it->second == record_it) {
-      by_karma_idx.erase(karma_it);
-      break;
-    }
-  }
-
-  // Remove from database
-  database.erase(record_it);
 
   return true;
 }
