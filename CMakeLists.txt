@@ -23,6 +23,7 @@ set(Part_1
         2_set_iterator++
         3_hash_point
         4_hash_person
+        5_secondary_index
 )
 
 set(Part_2
